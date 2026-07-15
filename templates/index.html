@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Palmo Model - To Baker Street!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Georgia', serif;
+            background: white;
+            color: darkslategray;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+        }
+        
+        h1 {
+            color: darkslategray;
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+        
+        .logo {
+            display: block;
+            max-width: 400px;
+            margin: 0 auto 30px auto;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: gray;
+            font-style: italic;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        
+        .model-selector {
+            background: whitesmoke;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 25px;
+            border: 1px solid lightgray;
+        }
+        
+        .model-selector h3 {
+            color: darkslategray;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        .radio-group {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .radio-option {
+            display: flex;
+            align-items: center;
+            background: white;
+            padding: 12px 15px;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid silver;
+        }
+        
+        .radio-option:hover {
+            background: gainsboro;
+            border-color: darkslategray;
+        }
+        
+        .radio-option input[type="radio"] {
+            margin-right: 10px;
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+        }
+        
+        .radio-option label {
+            cursor: pointer;
+            font-size: 1.05em;
+            color: darkslategray;
+        }
+        
+        .radio-option input[type="radio"]:checked + label {
+            color: black;
+            font-weight: bold;
+        }
+        
+        .input-section {
+            margin-bottom: 25px;
+        }
+        
+        .input-section label {
+            display: block;
+            color: darkslategray;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 15px;
+            background: white;
+            border: 2px solid silver;
+            border-radius: 3px;
+            color: darkslategray;
+            font-size: 1em;
+            font-family: 'Georgia', serif;
+            resize: vertical;
+            transition: border-color 0.2s ease;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: darkslategray;
+        }
+        
+        .controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .control-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .control-group label {
+            color: gray;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+        
+        .control-group input[type="number"],
+        .control-group input[type="range"] {
+            padding: 8px;
+            background: white;
+            border: 1px solid silver;
+            border-radius: 3px;
+            color: darkslategray;
+        }
+        
+        .control-group input[type="range"] {
+            cursor: pointer;
+        }
+        
+        button {
+            width: 100%;
+            padding: 15px;
+            background: darkslategray;
+            color: white;
+            border: 2px solid darkslategray;
+            border-radius: 3px;
+            font-size: 1.2em;
+            font-weight: bold;
+            font-family: 'Georgia', serif;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        button:hover {
+            background: black;
+            border-color: black;
+        }
+        
+        button:active {
+            transform: scale(0.98);
+        }
+        
+        button:disabled {
+            background: lightgray;
+            border-color: lightgray;
+            color: gray;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .response-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: whitesmoke;
+            border-radius: 5px;
+            border: 1px solid lightgray;
+            display: none;
+        }
+        
+        .response-section.active {
+            display: block;
+        }
+        
+        .response-section h3 {
+            color: darkslategray;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+        
+        .response-text {
+            background: white;
+            padding: 20px;
+            border-radius: 3px;
+            border-left: 4px solid darkslategray;
+            color: darkslategray;
+            font-size: 1.05em;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        .model-info {
+            margin-top: 15px;
+            padding: 10px;
+            background: gainsboro;
+            border-radius: 3px;
+            font-size: 0.9em;
+            color: gray;
+        }
+        
+        .error {
+            background: mistyrose;
+            border-left-color: red;
+            color: red;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: gray;
+            font-style: italic;
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid lightgray;
+            border-radius: 50%;
+            border-top-color: darkslategray;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .footer {
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid lightgray;
+            text-align: center;
+            color: gray;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="{{ url_for('static', filename='palmo.jpg') }}" alt="Palmo Logo" class="logo">
+        
+        <div class="model-selector">
+            <h3>Choose a detective model</h3>
+            <div class="radio-group">
+                <div class="radio-option">
+                    <input type="radio" id="bohemia" name="model" value="Bohemia">
+                    <label for="bohemia">Bohemia (Pretrained)</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" id="bohemia-tuned" name="model" value="Bohemia-tuned">
+                    <label for="bohemia-tuned">Bohemia (Fine-tuned)</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" id="sherlock" name="model" value="Sherlock" checked>
+                    <label for="sherlock">Sherlock (Pretrained)</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" id="sherlock-tuned" name="model" value="Sherlock-tuned">
+                    <label for="sherlock-tuned">Sherlock (Fine-tuned)</label>
+                </div>
+            </div>
+        </div>
+        
+        <div class="input-section">
+            <label for="prompt">Prompt:</label>
+            <textarea id="prompt" placeholder="Examples: 'Once upon a time', 'Who was', 'The mystery of'"></textarea>
+        </div>
+        
+        <div class="controls">
+            <div class="control-group">
+                <label for="temperature">Temperature: <span id="temp-value">0.7</span></label>
+                <input type="range" id="temperature" min="0.1" max="1.5" step="0.1" value="0.7">
+            </div>
+            <div class="control-group">
+                <label for="max-tokens">Max tokens:</label>
+                <input type="number" id="max-tokens" min="10" max="500" value="100">
+            </div>
+        </div>
+        
+        <button id="submit-btn" onclick="runInference()">
+            To Baker Street! 🔎
+        </button>
+        
+        <div id="response-section" class="response-section">
+            <h3>Watson's Notes:</h3>
+            <div id="response-text" class="response-text"></div>
+            <div id="model-info" class="model-info"></div>
+        </div>
+        
+        <div class="footer">
+            <p>Fabrizio Soppelsa<br>
+            fabrizio.soppelsa@community.unipa.it<br>
+            Natural Language Processing course · 2025/2026</p>
+        </div>
+    </div>
+    
+    <script>
+        // Update temperature display
+        document.getElementById('temperature').addEventListener('input', function(e) {
+            document.getElementById('temp-value').textContent = e.target.value;
+        });
+        
+        async function runInference() {
+            const submitBtn = document.getElementById('submit-btn');
+            const responseSection = document.getElementById('response-section');
+            const responseText = document.getElementById('response-text');
+            const modelInfo = document.getElementById('model-info');
+            
+            // Get input values
+            const model = document.querySelector('input[name="model"]:checked').value;
+            const prompt = document.getElementById('prompt').value;
+            const temperature = parseFloat(document.getElementById('temperature').value);
+            const maxTokens = parseInt(document.getElementById('max-tokens').value);
+            
+            // Validate
+            if (!prompt.trim()) {
+                alert('Please enter a prompt!');
+                return;
+            }
+            
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Thinking...';
+            responseSection.classList.add('active');
+            responseText.className = 'response-text loading';
+            responseText.innerHTML = '<div class="spinner"></div> Holmes thinking...';
+            modelInfo.textContent = '';
+            
+            try {
+                const response = await fetch('/inference', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        model: model,
+                        prompt: prompt,
+                        temperature: temperature,
+                        max_tokens: maxTokens
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    responseText.className = 'response-text';
+                    responseText.textContent = data.response;
+                    modelInfo.textContent = `Model: ${data.model} | Checkpoint: ${data.checkpoint}`;
+                } else {
+                    responseText.className = 'response-text error';
+                    responseText.textContent = `Error: ${data.error}`;
+                    modelInfo.textContent = '';
+                }
+            } catch (error) {
+                responseText.className = 'response-text error';
+                responseText.textContent = `Network error: ${error.message}`;
+                modelInfo.textContent = '';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Game is Afoot!';
+            }
+        }
+        
+        // Allow Enter key to submit (with Shift+Enter for newline)
+        document.getElementById('prompt').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                runInference();
+            }
+        });
+    </script>
+</body>
+</html>

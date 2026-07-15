@@ -1,0 +1,52 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontSize 11
+skinparam shadowing false
+skinparam monochrome true
+skinparam rectangleBorderThickness 2
+skinparam arrowThickness 1.5
+skinparam defaultTextAlignment center
+
+' Prima riga: da sinistra a destra
+rectangle "Corpus\n(Bohemia/Sherlock)" as corpus
+rectangle "Tokenizzazione\n(BPE)" as tokenize
+rectangle "Embedding" as embed
+rectangle "Embedding\nPosizionale" as posembed
+
+' Seconda riga: da destra a sinistra
+rectangle "pretrained-best.pt" as pretrained
+rectangle "Preaddestramento\nsu GPU" as pretrain
+rectangle "Modello GPT" as gpt
+rectangle "Data Loader\n(batches)" as loader
+
+' Terza riga: da sinistra a destra
+rectangle "Fine tuning\nper istruzioni" as finetune
+rectangle "Quantizzazione\na FP8" as quant
+rectangle "pretrained-tuned-best.pt" as tuned
+
+' Quarta riga: da destra a sinistra
+rectangle "App Flask" as flask
+rectangle "Salvataggio su\nHuggingFace" as hf
+
+' Prima riga: sinistra -> destra
+corpus -right-> tokenize
+tokenize -right-> embed
+tokenize -right-> posembed
+embed -right-> loader
+posembed -right-> loader
+
+' Seconda riga: destra -> sinistra
+loader -down-> gpt
+gpt -left-> pretrain
+pretrain -left-> pretrained
+
+' Terza riga: sinistra -> destra
+pretrained -down-> finetune
+finetune -right-> quant
+quant -right-> tuned
+
+' Quarta riga: destra -> sinistra
+tuned -down-> hf
+tuned -down-> flask
+
+@enduml

@@ -1,0 +1,56 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontSize 10
+skinparam shadowing false
+
+!define VISIBLE #C8E6C9
+!define MASKED #FFCDD2
+
+rectangle "Causal Attention Mask" {
+  rectangle " " as header {
+    label "k₁" as k1
+    label "k₂" as k2
+    label "k₃" as k3
+    label "k₄" as k4
+  }
+  
+  rectangle "q₁" as q1 {
+    rectangle " 0 " as q1k1 VISIBLE
+    rectangle "-∞" as q1k2 MASKED
+    rectangle "-∞" as q1k3 MASKED
+    rectangle "-∞" as q1k4 MASKED
+  }
+  
+  rectangle "q₂" as q2 {
+    rectangle " 0 " as q2k1 VISIBLE
+    rectangle " 0 " as q2k2 VISIBLE
+    rectangle "-∞" as q2k3 MASKED
+    rectangle "-∞" as q2k4 MASKED
+  }
+  
+  rectangle "q₃" as q3 {
+    rectangle " 0 " as q3k1 VISIBLE
+    rectangle " 0 " as q3k2 VISIBLE
+    rectangle " 0 " as q3k3 VISIBLE
+    rectangle "-∞" as q3k4 MASKED
+  }
+  
+  rectangle "q₄" as q4 {
+    rectangle " 0 " as q4k1 VISIBLE
+    rectangle " 0 " as q4k2 VISIBLE
+    rectangle " 0 " as q4k3 VISIBLE
+    rectangle " 0 " as q4k4 VISIBLE
+  }
+}
+
+note right of q1
+  Position 1 sees
+  only itself
+end note
+
+note right of q4
+  Position 4 sees
+  all positions
+end note
+
+@enduml

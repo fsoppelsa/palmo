@@ -1,0 +1,34 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontSize 11
+skinparam shadowing false
+
+rectangle "PalmoModel" {
+  rectangle "Input Token IDs" as input #E3F2FD
+  
+  rectangle "Token Embedding\n+\nPositional Embedding" as embed #FFF9C4
+  
+  rectangle "Dropout (p=0.1)" as dropout #FFE0B2
+  
+  rectangle "TransformerBlock × 12" as blocks #C8E6C9 {
+    rectangle "Multi-Head\nAttention" as mha #A5D6A7
+    rectangle "LayerNorm +\nResidual" as ln1 #81C784
+    rectangle "Feed-Forward\nNetwork" as ffn #A5D6A7
+    rectangle "LayerNorm +\nResidual" as ln2 #81C784
+  }
+  
+  rectangle "Layer Normalization" as lnfinal #E1BEE7
+  
+  rectangle "LM Head\n→ Logits\n(vocab_size)" as lmhead #F8BBD0
+}
+
+input -down-> embed
+embed -down-> dropout
+dropout -down-> blocks
+mha -down-> ln1
+ln1 -down-> ffn
+ffn -down-> ln2
+blocks -down-> lnfinal
+lnfinal -down-> lmhead
+
+@enduml
